@@ -71,15 +71,26 @@ async function connect(address, token) {
 /**
  * Checks if a light is on then changes the color
  *
- * @param connection
  * @param color
  * @returns {Promise<void>}
  */
-async function changeColor(connection, color) {
-  if (await connection.power()) {
-    connection.color(color)
-  } else {
-    console.error(`Couldn't change light color, make sure it's turned on`)
+async function changeColor(color) {
+  console.log(`Changing color to: ${color}`)
+
+  for (const light of lights) {
+    try {
+      const connection = await connect(light.ip, light.token);
+
+      if (await connection.power()) {
+        connection.color(color)
+      } else {
+        console.error(`Couldn't change light color, make sure it's turned on`)
+      }
+
+    } catch (e) {
+      console.error(e)
+      process.exit(1)
+    }
   }
 }
 
@@ -123,22 +134,9 @@ app.get('/lights/color-next', async (req, res) => {
     selectedColorIndex = 0;
   }
 
-  const color = colors[selectedColorIndex]
-  console.log(`Changing color to: ${color}`)
+  await changeColor(colors[selectedColorIndex])
 
-  for (const light of lights) {
-    try {
-      await changeColor(
-        await connect(light.ip, light.token),
-        color
-      )
-    } catch (e) {
-      console.error(e)
-      process.exit(1)
-    }
-  }
-
-  res.status(200).send(`Color changed to ${color}`)
+  res.status(200).send(`Color changed to ${colors[selectedColorIndex]}`)
 });
 
 app.get('/lights/color-prev', async (req, res) => {
@@ -149,22 +147,9 @@ app.get('/lights/color-prev', async (req, res) => {
     selectedColorIndex = colorsCount;
   }
 
-  const color = colors[selectedColorIndex]
-  console.log(`Changing color to: ${color}`)
+  await changeColor(colors[selectedColorIndex])
 
-  for (const light of lights) {
-    try {
-      await changeColor(
-        await connect(light.ip, light.token),
-        color
-      )
-    } catch (e) {
-      console.error(e)
-      process.exit(1)
-    }
-  }
-
-  res.status(200).send(`Color changed to ${color}`)
+  res.status(200).send(`Color changed to ${colors[selectedColorIndex]}`)
 });
 
 app.get('/lights/brightness-up', async (req, res) => {
