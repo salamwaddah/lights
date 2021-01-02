@@ -52,10 +52,15 @@ async function connect(address, token) {
 
   if (!connection) {
     console.log(`No connection: adding new for ${address}`)
-    connection = await io.device({
-      address,
-      token,
-    })
+    try {
+      connection = await io.device({
+        address,
+        token,
+      })
+    } catch (e) {
+      console.error(e)
+      process.exit(1)
+    }
   }
 
   connections[address] = connection
@@ -74,16 +79,21 @@ async function changeColor(connection, color) {
   if (await connection.power()) {
     connection.color(color)
   } else {
-    console.error(`Couldn't change color, make sure ${light.ip} is turned on`)
+    console.error(`Couldn't change light color, make sure it's turned on`)
   }
 }
 
 app.get('/lights/on', async (req, res) => {
   for (const light of lights) {
-    const connection = await connect(light.ip, light.token)
+    try {
+      const connection = await connect(light.ip, light.token)
 
-    console.info(`Light ${light.ip} is ON`)
-    connection.setPower(true)
+      console.info(`Light ${light.ip} is ON`)
+      connection.setPower(true)
+    } catch (e) {
+      console.error(e)
+      process.exit(1)
+    }
   }
 
   res.status(200).send('Lights on')
@@ -91,10 +101,15 @@ app.get('/lights/on', async (req, res) => {
 
 app.get('/lights/off', async (req, res) => {
   for (const light of lights) {
-    const connection = await connect(light.ip, light.token)
+    try {
+      const connection = await connect(light.ip, light.token)
 
-    console.info(`Light ${light.ip} is OFF`)
-    connection.setPower(false)
+      console.info(`Light ${light.ip} is OFF`)
+      connection.setPower(false)
+    } catch (e) {
+      console.error(e)
+      process.exit(1)
+    }
   }
 
   res.status(200).send('Lights off')
@@ -112,10 +127,15 @@ app.get('/lights/color-next', async (req, res) => {
   console.log(`Changing color to: ${color}`)
 
   for (const light of lights) {
-    await changeColor(
-      await connect(light.ip, light.token),
-      color
-    )
+    try {
+      await changeColor(
+        await connect(light.ip, light.token),
+        color
+      )
+    } catch (e) {
+      console.error(e)
+      process.exit(1)
+    }
   }
 
   res.status(200).send(`Color changed to ${color}`)
@@ -133,10 +153,15 @@ app.get('/lights/color-prev', async (req, res) => {
   console.log(`Changing color to: ${color}`)
 
   for (const light of lights) {
-    await changeColor(
-      await connect(light.ip, light.token),
-      color
-    )
+    try {
+      await changeColor(
+        await connect(light.ip, light.token),
+        color
+      )
+    } catch (e) {
+      console.error(e)
+      process.exit(1)
+    }
   }
 
   res.status(200).send(`Color changed to ${color}`)
