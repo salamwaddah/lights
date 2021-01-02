@@ -2,8 +2,8 @@
 
 This is the source code and instructions to control Xiaomi Mi home devices using a PlayStation4 Controller.
 
-- index.js the Node.js server code
-- ps.py Python controller button mapping with Node.js endpoints
+- `index.js` the Node.js server code
+- `ps.py` Python controller button mapping with Node.js endpoints
 
 ## Why
 
