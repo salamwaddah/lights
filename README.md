@@ -24,6 +24,6 @@ the [MiJia IO library used to control Mi home devices](https://github.com/salamw
 ## Resources
 
 - (WIP) YouTube video tutorial
-- (WIP) Blogpost with instructions
+- [Blogpost with instructions](https://salamwaddah.com/blog/how-controlled-smart-lights-with-ps4-controller)
 - [MiJia IO library to control Mi devices](https://github.com/salamwaddah/mijia-io)
 - [Python package used to interact with PS4 controllers](https://github.com/ArturSpirin/pyPS4Controller)
